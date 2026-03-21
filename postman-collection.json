@@ -1,0 +1,275 @@
+{
+  "info": {
+    "name": "Serviço Revenda Veículos",
+    "_postman_id": "servico-revenda-veiculos",
+    "description": "Collection para testar os endpoints do serviço de cadastro, edição e listagem de veículos.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Cadastrar Veículo",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/veiculos",
+          "host": ["{{baseUrl}}"],
+          "path": ["veiculos"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"marca\": \"Toyota\",\n  \"modelo\": \"Corolla\",\n  \"ano\": 2022,\n  \"cor\": \"Prata\",\n  \"preco\": 115000.00,\n  \"placa\": \"ABC-1234\",\n  \"status\": \"DISPONIVEL\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 201 Created', function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "pm.test('Retorna id gerado', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.id).to.be.a('number');",
+              "    pm.collectionVariables.set('veiculoId', json.id);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cadastrar Veículo - Segundo",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/veiculos",
+          "host": ["{{baseUrl}}"],
+          "path": ["veiculos"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"marca\": \"Honda\",\n  \"modelo\": \"Civic\",\n  \"ano\": 2021,\n  \"cor\": \"Preto\",\n  \"preco\": 98000.00,\n  \"placa\": \"XYZ-5678\",\n  \"status\": \"DISPONIVEL\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 201 Created', function () {",
+              "    pm.response.to.have.status(201);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Listar Todos os Veículos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/veiculos",
+          "host": ["{{baseUrl}}"],
+          "path": ["veiculos"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 200 OK', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Retorna array', function () {",
+              "    pm.expect(pm.response.json()).to.be.an('array');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Buscar Veículo por ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/veiculos/{{veiculoId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["veiculos", "{{veiculoId}}"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 200 OK', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('ID corresponde', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.id).to.eql(pm.collectionVariables.get('veiculoId'));",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Editar Veículo",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/veiculos/{{veiculoId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["veiculos", "{{veiculoId}}"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"marca\": \"Toyota\",\n  \"modelo\": \"Corolla\",\n  \"ano\": 2022,\n  \"cor\": \"Branco\",\n  \"preco\": 118000.00,\n  \"placa\": \"ABC-1234\",\n  \"status\": \"RESERVADO\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 200 OK', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Status atualizado para RESERVADO', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.status).to.eql('RESERVADO');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Buscar Veículo Inexistente (404)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/veiculos/9999",
+          "host": ["{{baseUrl}}"],
+          "path": ["veiculos", "9999"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 404 Not Found', function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "pm.test('Mensagem de erro presente', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.mensagem).to.include('9999');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cadastrar Veículo Inválido (400)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/veiculos",
+          "host": ["{{baseUrl}}"],
+          "path": ["veiculos"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"marca\": \"\",\n  \"modelo\": \"\",\n  \"ano\": null,\n  \"cor\": \"\",\n  \"preco\": -100,\n  \"placa\": \"\",\n  \"status\": null\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 400 Bad Request', function () {",
+              "    pm.response.to.have.status(400);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ]
+}
